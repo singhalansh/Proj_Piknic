@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, MessageCircle, Navigation, Calendar, Users } from 'lucide-react';
+import { sheetsService } from '../services/sheetsService';
 
 const Contact: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -10,6 +11,9 @@ const Contact: React.FC = () => {
     message: '',
     visitType: 'general'
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,10 +40,37 @@ const Contact: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setErrorMessage('');
+
+    try {
+      await sheetsService.submitForm({
+        fullName: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        interestType: formData.visitType,
+        message: formData.message
+      });
+
+      setSubmitStatus('success');
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: '',
+        visitType: 'general'
+      });
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -271,9 +302,12 @@ const Contact: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button
                     type="submit"
-                    className="flex-1 bg-forest-500 hover:bg-forest-600 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg"
+                    disabled={isSubmitting}
+                    className={`flex-1 bg-gold-400 hover:bg-gold-500 text-forest-500 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg ${
+                      isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   >
-                    Send Message
+                    {isSubmitting ? 'Submitting...' : 'Send Message'}
                   </button>
                   <button
                     type="button"
@@ -283,6 +317,18 @@ const Contact: React.FC = () => {
                     <span>WhatsApp</span>
                   </button>
                 </div>
+
+                {submitStatus === 'success' && (
+                  <div className="text-green-400 text-center">
+                    Thank you for your message! We'll get back to you soon.
+                  </div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <div className="text-red-400 text-center">
+                    {errorMessage || 'Sorry, there was an error submitting your message. Please try again.'}
+                  </div>
+                )}
               </form>
             </div>
 

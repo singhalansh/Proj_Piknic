@@ -8,7 +8,10 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   server: {
-    historyApiFallback: true,
+    port: 5173,
+    strictPort: true,
+    host: true,
+    origin: 'http://localhost:5173',
   },
   build: {
     rollupOptions: {
