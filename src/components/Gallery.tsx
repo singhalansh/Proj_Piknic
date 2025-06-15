@@ -99,6 +99,7 @@ const Gallery: React.FC = () => {
     }
   ];
 
+  // Filter gallery items based on active filter
   const filteredItems = activeFilter === 'all' 
     ? galleryItems 
     : galleryItems.filter(item => item.category === activeFilter);
@@ -150,7 +151,7 @@ const Gallery: React.FC = () => {
         <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 transition-all duration-1000 delay-500 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
         }`}>
-          {galleryItems.map((item, index) => (
+          {filteredItems.map((item, index) => (
             <div
               key={index}
               className="group relative aspect-square overflow-hidden rounded-2xl cursor-pointer"
@@ -186,16 +187,16 @@ const Gallery: React.FC = () => {
             </button>
             <div className="relative max-w-4xl w-full">
               <img
-                src={galleryItems[selectedImage].src}
-                alt={galleryItems[selectedImage].title}
+                src={filteredItems[selectedImage].src}
+                alt={filteredItems[selectedImage].title}
                 className="w-full h-auto rounded-lg"
               />
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-black/80 to-transparent">
                 <h3 className="font-playfair text-xl sm:text-2xl font-bold text-cream-50 mb-2">
-                  {galleryItems[selectedImage].title}
+                  {filteredItems[selectedImage].title}
                 </h3>
                 <p className="text-cream-100 font-inter text-sm sm:text-base">
-                  {galleryItems[selectedImage].description}
+                  {filteredItems[selectedImage].description}
                 </p>
               </div>
             </div>
