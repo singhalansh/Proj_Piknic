@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,7 +20,7 @@ const Navbar: React.FC = () => {
   const scrollToSection = (id: string) => {
     if (location.pathname !== '/') {
       // If not on home page, navigate to home first
-      window.location.href = `/#${id}`;
+      navigate('/', { state: { scrollTo: id } });
       return;
     }
     
