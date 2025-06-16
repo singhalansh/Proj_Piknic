@@ -19,5 +19,10 @@ export default defineConfig({
         manualChunks: undefined
       }
     }
+  },
+  define: {
+    'process.env.VITE_API_URL': JSON.stringify(process.env.NODE_ENV === 'production' 
+      ? 'https://picknikb.vercel.app/api'
+      : 'http://localhost:3000/api')
   }
 });

@@ -11,7 +11,11 @@ export const sheetsService = {
     try {
       console.log('Starting form submission...');
       
-      const response = await fetch('http://localhost:3000/api/submit-form', {
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://picknikb.vercel.app/api/submit-form'
+        : 'http://localhost:3000/api/submit-form';
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
