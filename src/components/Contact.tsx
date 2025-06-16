@@ -47,7 +47,7 @@ const Contact: React.FC = () => {
     setErrorMessage('');
 
     try {
-      await sheetsService.submitForm({
+      const result = await sheetsService.submitForm({
         fullName: formData.name,
         phone: formData.phone,
         email: formData.email,
@@ -55,15 +55,19 @@ const Contact: React.FC = () => {
         message: formData.message
       });
 
-      setSubmitStatus('success');
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: '',
-        visitType: 'general'
-      });
+      if (result.success) {
+        setSubmitStatus('success');
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: '',
+          visitType: 'general'
+        });
+      } else {
+        throw new Error(result.error || 'Failed to submit form');
+      }
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitStatus('error');

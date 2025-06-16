@@ -23,18 +23,27 @@ export const sheetsService = {
         body: JSON.stringify(formData)
       });
 
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        console.error('Failed to parse error response:', e);
+        throw new Error('Server returned an invalid response');
+      }
+
       if (!response.ok) {
-        const errorData = await response.json();
         console.error('Form submission error:', errorData);
         throw new Error(errorData.error || 'Failed to submit form');
       }
 
-      const result = await response.json();
       console.log('Form submitted successfully');
-      return result;
+      return errorData;
     } catch (error) {
       console.error('Error in submitForm:', error);
-      throw error;
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred');
     }
   }
 }; 

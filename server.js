@@ -133,10 +133,18 @@ app.post('/api/submit-form', async (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Server error:', err);
   res.status(500).json({
     success: false,
     error: 'An unexpected error occurred. Please try again later.'
+  });
+});
+
+// Handle 404 errors
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Not found'
   });
 });
 
@@ -147,4 +155,7 @@ testConnection().then(() => {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
+}).catch(error => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
 });
