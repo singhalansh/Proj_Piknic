@@ -8,6 +8,11 @@ interface FormData {
   message: string;
 }
 
+interface GoogleOAuthResponse {
+  access_token?: string;
+  error?: string;
+}
+
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
 export const sheetsService = {
@@ -16,28 +21,30 @@ export const sheetsService = {
       console.log('Initializing OAuth client...');
       console.log('Client ID:', import.meta.env.VITE_GOOGLE_CLIENT_ID);
       
-      return new Promise((resolve, reject) => {
+      return new Promise<string>((resolve, reject) => {
         if (!window.google?.accounts?.oauth2) {
           console.error('Google OAuth not loaded');
           reject(new Error('Google OAuth not loaded. Please refresh the page.'));
           return;
         }
 
-        // @ts-ignore - Google OAuth types
         const client = window.google.accounts.oauth2.initTokenClient({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
           scope: SCOPES,
-          callback: (response: any) => {
+          callback: (response: GoogleOAuthResponse) => {
             console.log('OAuth callback received:', response);
             if (response.error) {
               console.error('Auth error:', response.error);
               reject(new Error(`Authentication failed: ${response.error}`));
-            } else {
+            } else if (response.access_token) {
               console.log('Auth successful, token received');
               resolve(response.access_token);
+            } else {
+              reject(new Error('No access token received'));
             }
           },
-          prompt: 'consent',
+          prompt: 'none',
+          access_type: 'offline',
           hint: window.location.origin,
         });
 
