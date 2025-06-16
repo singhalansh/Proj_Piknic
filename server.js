@@ -13,9 +13,11 @@ app.use(helmet());
 // CORS configuration
 app.use(cors({
   origin: (origin, callback) => {
+    console.log('Request origin:', origin);
     const allowedOrigins = process.env.ALLOWED_ORIGINS 
       ? process.env.ALLOWED_ORIGINS.split(',') 
       : ['http://localhost:5173', 'https://picknikb.vercel.app'];
+    console.log('Allowed origins:', allowedOrigins);
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -57,6 +59,10 @@ const sheets = google.sheets({ version: 'v4', auth });
 // Test the connection on startup
 async function testConnection() {
   try {
+    console.log('Testing Google Sheets connection...');
+    console.log('Service Account Email:', process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL);
+    console.log('Spreadsheet ID:', process.env.SPREADSHEET_ID);
+    
     await sheets.spreadsheets.get({
       spreadsheetId: process.env.SPREADSHEET_ID
     });
@@ -73,12 +79,18 @@ async function testConnection() {
 }
 
 app.post('/api/submit-form', async (req, res) => {
+  console.log('Received form submission request');
   try {
+    console.log('Request body:', req.body);
+    
     // Validate input
     const validatedData = formSchema.parse(req.body);
+    console.log('Validated data:', validatedData);
+    
     const { fullName, phone, email, interestType, message } = validatedData;
 
     // Get existing data to generate new ID
+    console.log('Fetching existing data from Google Sheets...');
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SPREADSHEET_ID,
       range: 'Sheet1!A:J',
@@ -102,6 +114,7 @@ app.post('/api/submit-form', async (req, res) => {
       ''
     ];
 
+    console.log('Appending new row to Google Sheets...');
     // Append the new row
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.SPREADSHEET_ID,
@@ -112,11 +125,13 @@ app.post('/api/submit-form', async (req, res) => {
       }
     });
 
+    console.log('Form submitted successfully');
     res.json({ success: true, submissionId: newId });
   } catch (error) {
     console.error('Error submitting form:', error);
     
     if (error instanceof z.ZodError) {
+      console.error('Validation error:', error.errors);
       return res.status(400).json({
         success: false,
         error: 'Invalid input data',
@@ -142,6 +157,7 @@ app.use((err, req, res, next) => {
 
 // Handle 404 errors
 app.use((req, res) => {
+  console.log('404 Not Found:', req.url);
   res.status(404).json({
     success: false,
     error: 'Not found'
