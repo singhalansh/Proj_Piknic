@@ -59,7 +59,7 @@ export default {
       },
       animation: {
         'fade-in': 'fadeIn 0.8s ease-in-out',
-        'fade-in-up': 'fadeInUp 0.8s ease-out',
+        'fade-in-up': 'fade-in-up 0.5s ease-out',
         'parallax': 'parallax 0.5s ease-out',
         'float': 'float 6s ease-in-out infinite',
       },
@@ -79,6 +79,16 @@ export default {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
+        },
+        'fade-in-up': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(10px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
         }
       }
     },

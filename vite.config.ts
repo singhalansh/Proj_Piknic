@@ -12,6 +12,14 @@ export default defineConfig({
     strictPort: true,
     host: true,
     origin: 'http://localhost:5173',
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
   build: {
     rollupOptions: {
@@ -23,6 +31,8 @@ export default defineConfig({
   define: {
     'process.env.VITE_API_URL': JSON.stringify(process.env.NODE_ENV === 'production' 
       ? 'https://picknikb.vercel.app/api'
-      : 'http://localhost:3000/api')
+      : 'http://localhost:3000/api'),
+    'process.env.EMAIL_USER': JSON.stringify(process.env.EMAIL_USER),
+    'process.env.EMAIL_PASSWORD': JSON.stringify(process.env.EMAIL_PASSWORD)
   }
 });

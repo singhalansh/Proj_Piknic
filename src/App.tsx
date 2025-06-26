@@ -17,7 +17,7 @@ import CafePage from './pages/CafePage';
 import OurTalesPage from './pages/OurTalesPage';
 
 // Create a wrapper component to handle scroll behavior
-const HomePage = () => {
+const HomePage: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const HomePage = () => {
   );
 };
 
-function App() {
+const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -76,6 +76,6 @@ function App() {
       </div>
     </Router>
   );
-}
+};
 
 export default App;

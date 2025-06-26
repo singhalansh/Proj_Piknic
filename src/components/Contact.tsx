@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, MessageCircle, Navigation, Calendar, Users } from 'lucide-react';
-import { sheetsService } from '../services/sheetsService';
+import SuccessModal from './SuccessModal';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const Contact: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,7 +16,13 @@ const Contact: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [submissionId, setSubmissionId] = useState<string>('');
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  const phoneNumber = '+919120112701';
+  const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}`;
+  const callUrl = `tel:${phoneNumber}`;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -47,16 +55,26 @@ const Contact: React.FC = () => {
     setErrorMessage('');
 
     try {
-      const result = await sheetsService.submitForm({
-        fullName: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        interestType: formData.visitType,
-        message: formData.message
+      const response = await fetch(`${API_URL}/submit-form`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          interestType: formData.visitType,
+          message: formData.message
+        }),
       });
+
+      const result = await response.json();
 
       if (result.success) {
         setSubmitStatus('success');
+        setSubmissionId(result.submissionId);
+        setShowSuccessModal(true);
         // Reset form
         setFormData({
           name: '',
@@ -83,28 +101,32 @@ const Contact: React.FC = () => {
       title: 'Location',
       primary: 'Gomti Nagar, Lucknow',
       secondary: 'Near Phoenix Mall, UP 226010',
-      action: 'Get Directions'
+      action: 'Get Directions',
+      actionUrl: 'https://maps.google.com/?q=Gomti+Nagar,+Lucknow'
     },
     {
       icon: Phone,
       title: 'Phone',
-      primary: '+91 9876543210',
+      primary: phoneNumber,
       secondary: 'Mon-Sun: 6:00 AM - 11:00 PM',
-      action: 'Call Now'
+      action: 'Call Now',
+      actionUrl: callUrl
     },
     {
       icon: Mail,
       title: 'Email',
       primary: 'hello@thepicknik.com',
       secondary: 'We respond within 2 hours',
-      action: 'Send Email'
+      action: 'Send Email',
+      actionUrl: 'mailto:hello@thepicknik.com'
     },
     {
       icon: MessageCircle,
       title: 'WhatsApp',
-      primary: '+91 9876543210',
+      primary: phoneNumber,
       secondary: 'Instant booking & queries',
-      action: 'Chat Now'
+      action: 'Chat Now',
+      actionUrl: whatsappUrl
     }
   ];
 
@@ -169,9 +191,14 @@ const Contact: React.FC = () => {
                         <p className="text-cream-200 font-inter text-sm mb-3">
                           {info.secondary}
                         </p>
-                        <button className="text-gold-400 hover:text-gold-300 font-inter text-sm font-semibold transition-colors">
+                        <a 
+                          href={info.actionUrl}
+                          target={info.title === 'WhatsApp' ? '_blank' : undefined}
+                          rel={info.title === 'WhatsApp' ? 'noopener noreferrer' : undefined}
+                          className="text-gold-400 hover:text-gold-300 font-inter text-sm font-semibold transition-colors"
+                        >
                           {info.action}
-                        </button>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -315,6 +342,7 @@ const Contact: React.FC = () => {
                   </button>
                   <button
                     type="button"
+                    onClick={() => window.open(whatsappUrl, '_blank')}
                     className="flex-1 bg-gold-400 hover:bg-gold-500 text-forest-500 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg flex items-center justify-center space-x-2"
                   >
                     <MessageCircle className="w-5 h-5" />
@@ -324,7 +352,7 @@ const Contact: React.FC = () => {
 
                 {submitStatus === 'success' && (
                   <div className="text-green-400 text-center">
-                    Thank you for your message! We'll get back to you soon.
+                    Our team will contact you shortly.
                   </div>
                 )}
 
@@ -384,6 +412,15 @@ const Contact: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Add SuccessModal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        submissionId={submissionId}
+        customerName={formData.name}
+        submissionType={formData.visitType}
+      />
     </section>
   );
 };
