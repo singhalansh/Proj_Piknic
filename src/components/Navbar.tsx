@@ -38,18 +38,13 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="bg-gold-400 p-2 rounded-full">
-                <Zap className="w-5 h-5 text-forest-500" />
-              </div>
-              <div>
-                <h1 className="font-playfair text-xl md:text-2xl font-semibold text-cream-50">
-                  The PICKNIK
-                </h1>
-                <p className="text-xs text-cream-100 tracking-wider hidden sm:block">
-                  A PLACE BEYOND TIME
-                </p>
-              </div>
+            <Link to="/" className="flex items-center">
+              <img
+                src="https://res.cloudinary.com/dfsrafhab/image/upload/v1750959110/picknik_logo_final_hofhlq.png"
+                alt="The PICKNIK Logo"
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-full bg-white shadow-md border border-gold-400 p-1 transition-all duration-300 hover:scale-105"
+                style={{ maxWidth: '64px', maxHeight: '64px' }}
+              />
             </Link>
           </div>
 

@@ -47,21 +47,13 @@ const Footer: React.FC = () => {
             {/* Brand Section */}
             <div className="lg:col-span-1">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="bg-gold-400 p-3 rounded-full">
-                  <Zap className="w-6 h-6 text-forest-500" />
-                </div>
-                <div>
-                  <h3 className="font-playfair text-2xl font-bold text-cream-50">
-                    The PICKNIK
-                  </h3>
-                  <p className="text-xs text-cream-100 tracking-wider">
-                    A PLACE BEYOND TIME
-                  </p>
-                </div>
+                <img
+                  src="https://res.cloudinary.com/dfsrafhab/image/upload/v1750959110/picknik_logo_final_hofhlq.png"
+                  alt="The PICKNIK Logo"
+                  className="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-full bg-white shadow-md border border-gold-400 p-1 transition-all duration-300 hover:scale-105"
+                  style={{ maxWidth: '64px', maxHeight: '64px' }}
+                />
               </div>
-              <p className="text-cream-200 font-inter leading-relaxed mb-6">
-                Where elite sport meets soulful leisure, creating memories that transcend time and technology.
-              </p>
               
               {/* Contact Info */}
               <div className="space-y-3">

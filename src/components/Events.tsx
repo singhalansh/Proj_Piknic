@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, Clock, Users, Heart, Trophy, Building, Sparkles, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Events: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState('all');
   const sectionRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -117,6 +119,18 @@ const Events: React.FC = () => {
   ];
 
   const filteredEvents = activeFilter === 'all' ? eventTypes : eventTypes.filter(event => event.id === activeFilter);
+
+  // Helper to scroll to contact section
+  const scrollToContact = () => {
+    if (window.location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: 'contact' } });
+      return;
+    }
+    const element = document.getElementById('contact');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section id="events" ref={sectionRef} className="py-20 bg-cream-50 relative overflow-hidden">
@@ -280,7 +294,7 @@ const Events: React.FC = () => {
                   </div>
 
                   <div className="flex space-x-4">
-                    <button className="flex-1 bg-forest-500 hover:bg-forest-600 text-white py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg">
+                    <button className="flex-1 bg-forest-500 hover:bg-forest-600 text-white py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg" onClick={scrollToContact}>
                       Book Event
                     </button>
                     <button className="flex items-center justify-center w-12 h-12 border-2 border-forest-500 text-forest-500 hover:bg-forest-500 hover:text-white rounded-full transition-all duration-300">
