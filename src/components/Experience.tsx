@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Zap, Trophy, Coffee, ShoppingBag, Sparkles, Users, Award, Heart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Experience: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('courts');
   const sectionRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -101,6 +103,18 @@ const Experience: React.FC = () => {
     }
   };
 
+  // Helper to scroll to contact section
+  const scrollToContact = () => {
+    if (window.location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: 'contact' } });
+      return;
+    }
+    const element = document.getElementById('contact');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section id="experience" ref={sectionRef} className="py-20 bg-forest-500 text-white relative">
       <div className="absolute inset-0 bg-gradient-to-br from-forest-500 to-forest-700"></div>
@@ -181,7 +195,7 @@ const Experience: React.FC = () => {
                 <button className="bg-gold-400 hover:bg-gold-500 text-forest-500 px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg">
                   Learn More
                 </button>
-                <button className="border border-cream-100/30 hover:border-gold-400 text-cream-100 hover:text-gold-400 px-6 py-3 rounded-full font-semibold transition-all duration-300">
+                <button className="border border-cream-100/30 hover:border-gold-400 text-cream-100 hover:text-gold-400 px-6 py-3 rounded-full font-semibold transition-all duration-300" onClick={scrollToContact}>
                   Book Now
                 </button>
               </div>

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, MessageCircle, Phone, Clock, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const BookingButton: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,32 +19,46 @@ const BookingButton: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
+  // Helper to scroll to contact section
+  const scrollToContact = () => {
+    if (window.location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: 'contact' } });
+      return;
+    }
+    const element = document.getElementById('contact');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const bookingOptions = [
     {
       icon: Calendar,
       label: 'Book Court',
       description: 'Reserve your court time',
-      action: () => console.log('Book court'),
+      action: scrollToContact,
       primary: true
     },
     {
       icon: MessageCircle,
       label: 'WhatsApp',
       description: 'Quick booking & queries',
-      action: () => console.log('WhatsApp'),
+      // If you want WhatsApp to do something specific, set action here. Otherwise, scroll to contact.
+      action: scrollToContact,
       primary: false
     },
     {
       icon: Phone,
       label: 'Call Us',
       description: 'Speak to our team',
-      action: () => console.log('Call'),
+      // If you want Call Us to do something specific, set action here. Otherwise, scroll to contact.
+      action: scrollToContact,
       primary: false
     }
   ];
 
   return (
-    <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
+    <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 overscroll-none ${
       isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
     }`}>
       <div className="relative">
