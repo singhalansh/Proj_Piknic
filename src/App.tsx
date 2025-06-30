@@ -15,6 +15,7 @@ import OurStoryPage from './pages/OurStoryPage';
 import OurCourtsPage from './pages/OurCourtsPage';
 import CafePage from './pages/CafePage';
 import OurTalesPage from './pages/OurTalesPage';
+import GeminiChatbot from './components/AIchat';
 
 // Create a wrapper component to handle scroll behavior
 const HomePage: React.FC = () => {
@@ -73,6 +74,7 @@ const App: React.FC = () => {
           <Route path="/cafe" element={<CafePage />} />
           <Route path="/our-tales" element={<OurTalesPage />} />
         </Routes>
+        <GeminiChatbot />
       </div>
     </Router>
   );
