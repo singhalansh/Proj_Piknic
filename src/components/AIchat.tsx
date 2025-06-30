@@ -13,7 +13,7 @@ const GeminiChatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hi! I'm your AI assistant powered by Gemini. I can help you with questions, provide information, and have conversations. What would you like to know?",
+      content: "Hi! I'm your AI assistant. I can help you with questions, provide information, and have conversations. What would you like to know?",
       sender: 'ai',
       timestamp: new Date()
     }
@@ -21,7 +21,7 @@ const GeminiChatbot = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const apiKey = 'AIzaSyCjvpSJUBhG8zxMvTeTV2j6qAPgrhalj4E'; // Permanent API key
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY; // API key from .env
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Context for the AI (you can customize this)
@@ -242,7 +242,6 @@ Please provide a helpful response.`;
               </div>
               <div>
                 <h3 className="font-semibold text-cream-100">AI Assistant</h3>
-                <p className="text-xs opacity-90 text-cream-100">Powered by Gemini</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
